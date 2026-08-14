@@ -1,11 +1,11 @@
 {
   "name": "worker-sites-template",
-  "install": "cd workers-site && npm ci && npx --yes wrangler@4 --version",
+  "install": "npm ci",
   "terminals": [
     {
       "name": "wrangler-dev",
-      "command": "npx --yes wrangler@4 dev --compatibility-date 2026-08-14 --ip 0.0.0.0 --port 8787",
-      "description": "Local Cloudflare Workers dev server for the Workers Site, served at http://localhost:8787"
+      "command": "npm run dev -- --ip 0.0.0.0 --port 8787",
+      "description": "Local Cloudflare Workers dev server for the static site, served at http://localhost:8787"
     }
   ],
   "ports": [
