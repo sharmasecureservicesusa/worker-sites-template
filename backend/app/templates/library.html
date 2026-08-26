@@ -1,0 +1,16 @@
+{% extends "shell.html" %}
+{% block page_title %}Library{% endblock %}
+{% block heading %}Member library{% endblock %}
+{% block content %}
+<p class="muted">Briefing notes for the club. Each article is a row in Dolt and a gated route.</p>
+<ul class="card-list">
+    {% for item in resources %}
+    <li>
+        <a href="/library/{{ item.slug }}">
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.summary }}</span>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

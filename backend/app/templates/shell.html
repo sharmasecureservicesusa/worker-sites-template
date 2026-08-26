@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{% block page_title %}Club{% endblock %} · Workers Club{% endblock %}
+{% block body_class %}app-body{% endblock %}
+{% block chrome %}
+<div class="app-shell">
+    <aside class="rail">
+        <p class="wordmark">Workers Club</p>
+        <p class="rail-kicker">Members only</p>
+        <nav>
+            <a href="/dashboard" class="{% if section == 'dashboard' %}active{% endif %}">Dashboard</a>
+            <a href="/directory" class="{% if section == 'directory' %}active{% endif %}">Directory</a>
+            <a href="/library" class="{% if section == 'library' %}active{% endif %}">Library</a>
+            <a href="/history" class="{% if section == 'history' %}active{% endif %}">History</a>
+            <a href="/profile" class="{% if section == 'profile' %}active{% endif %}">Profile</a>
+        </nav>
+        <form method="post" action="/logout" class="sign-out">
+            <button type="submit" class="btn ghost">Sign out</button>
+        </form>
+    </aside>
+    <main class="stage">
+        <header class="stage-head">
+            <div>
+                <p class="eyebrow">Signed in as {{ member.display_name }}</p>
+                <h1>{% block heading %}{% endblock %}</h1>
+            </div>
+            <span class="pill">{{ member.role }}</span>
+        </header>
+        {% if notice %}<p class="banner ok" role="status">{{ notice }}</p>{% endif %}
+        {% if error %}<p class="banner bad" role="alert">{{ error }}</p>{% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

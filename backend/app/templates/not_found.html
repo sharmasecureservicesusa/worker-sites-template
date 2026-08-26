@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Not found · Workers Club{% endblock %}
+{% block body_class %}{% if member %}app-body{% else %}auth-body{% endif %}{% endblock %}
+{% block chrome %}
+{% if member %}
+<div class="app-shell">
+    <aside class="rail">
+        <p class="wordmark">Workers Club</p>
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/directory">Directory</a>
+            <a href="/library">Library</a>
+            <a href="/history">History</a>
+            <a href="/profile">Profile</a>
+        </nav>
+    </aside>
+    <main class="stage">
+        <h1>No such page</h1>
+        <p class="muted">That route is not in the club. The membership gate still ran before this 404.</p>
+        <p><a href="/dashboard">Return to the dashboard</a></p>
+    </main>
+</div>
+{% else %}
+<div class="auth-shell">
+    <p class="wordmark">Workers Club</p>
+    <section class="panel auth-panel">
+        <h1>Not found</h1>
+        <p class="muted">Members-only site. Sign in to continue.</p>
+        <p class="links"><a href="/login">Sign in</a></p>
+    </section>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "auth.html" %}
+{% block title %}Reset password · Workers Club{% endblock %}
+{% block auth %}
+<h1>Forgot password</h1>
+<p class="muted">We will issue a reset code for that membership if it exists.</p>
+<form method="post" action="/forgot" class="stack">
+    <label>
+        Email
+        <input type="email" name="email" required>
+    </label>
+    <button type="submit" class="btn primary">Send reset code</button>
+</form>
+<p class="links"><a href="/login">Back to sign in</a></p>
+{% endblock %}

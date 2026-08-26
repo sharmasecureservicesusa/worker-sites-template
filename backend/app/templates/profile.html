@@ -1,0 +1,31 @@
+{% extends "shell.html" %}
+{% block page_title %}Profile{% endblock %}
+{% block heading %}Your membership{% endblock %}
+{% block content %}
+<div class="split">
+    <form method="post" action="/profile" class="panel stack">
+        <h2>Profile</h2>
+        <label>
+            Display name
+            <input type="text" name="display_name" maxlength="120" required value="{{ member.display_name }}">
+        </label>
+        <label>
+            Email
+            <input type="email" value="{{ member.email }}" disabled>
+        </label>
+        <button type="submit" class="btn primary">Save profile</button>
+    </form>
+    <form method="post" action="/profile/password" class="panel stack">
+        <h2>Password</h2>
+        <label>
+            Current password
+            <input type="password" name="current_password" required>
+        </label>
+        <label>
+            New password
+            <input type="password" name="new_password" required minlength="10">
+        </label>
+        <button type="submit" class="btn primary">Update password</button>
+    </form>
+</div>
+{% endblock %}
