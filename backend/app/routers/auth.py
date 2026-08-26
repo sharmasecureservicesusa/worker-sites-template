@@ -7,6 +7,7 @@ from starlette.responses import Response
 
 from app.config import get_settings
 from app.db import get_session
+from app.models import Member
 from app.security import safe_next_path
 from app.templating import templates
 from app.services import (
@@ -55,6 +56,13 @@ def clear_session_cookie(response: Response) -> None:
 def wants_json(request: Request) -> bool:
     accept = request.headers.get("accept", "")
     return "application/json" in accept and "text/html" not in accept
+
+
+def bound_member(request: Request, session: Session) -> Member:
+    member = session.get(Member, request.state.member.id)
+    if member is None:
+        raise AuthError("Authentication required.", 401)
+    return member
 
 
 def error_response(request: Request, template: str, status_code: int, message: str, **context):
@@ -251,7 +259,7 @@ def save_profile(
     session: Session = Depends(get_session),
     display_name: str = Form(...),
 ):
-    member = request.state.member
+    member = bound_member(request, session)
     try:
         update_profile(session, member, display_name=display_name)
     except AuthError as exc:
@@ -266,7 +274,7 @@ def save_password(
     current_password: str = Form(...),
     new_password: str = Form(...),
 ):
-    member = request.state.member
+    member = bound_member(request, session)
     try:
         change_password(session, member, current_password=current_password, new_password=new_password)
     except AuthError as exc:

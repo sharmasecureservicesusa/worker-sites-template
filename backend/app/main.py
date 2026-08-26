@@ -111,7 +111,7 @@ def authenticate_request(request: Request) -> Member | None:
 
 
 def _wants_json(request: Request, path: str) -> bool:
-    if path.startswith("/api/") or path.startswith("/oauth/"):
+    if path.startswith("/api/") or path in {"/oauth/token", "/oauth/userinfo"}:
         return True
     accept = request.headers.get("accept", "")
     return "application/json" in accept and "text/html" not in accept
