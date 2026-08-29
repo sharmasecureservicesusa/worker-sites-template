@@ -1,0 +1,40 @@
+{% extends "shell.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block heading %}Clubhouse{% endblock %}
+{% block content %}
+<section class="hero-card">
+    <p class="eyebrow">OpenAuth session active</p>
+    <h2>Welcome back, {{ member.display_name }}.</h2>
+    <p>This portal replaced the old public Workers Site. Membership is checked on every HTML page and every API route. Identity lives in Dolt, so the ledger remembers who joined and when.</p>
+</section>
+<div class="grid-3">
+    <article class="stat">
+        <p class="stat-label">Roster</p>
+        <p class="stat-value">{{ roster_count }}</p>
+        <p class="muted">Verified members</p>
+    </article>
+    <article class="stat">
+        <p class="stat-label">Issuer</p>
+        <p class="stat-value">OAuth 2.0</p>
+        <p class="muted">Code + PKCE + RS256</p>
+    </article>
+    <article class="stat">
+        <p class="stat-label">Database</p>
+        <p class="stat-value">Dolt</p>
+        <p class="muted">Versioned MySQL</p>
+    </article>
+</div>
+<section>
+    <h2 class="section-title">Pinned library</h2>
+    <ul class="card-list">
+        {% for item in resources %}
+        <li>
+            <a href="/library/{{ item.slug }}">
+                <strong>{{ item.title }}</strong>
+                <span>{{ item.summary }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

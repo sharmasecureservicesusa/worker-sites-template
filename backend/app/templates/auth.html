@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ title | default("Sign in") }} · Workers Club{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block chrome %}
+<div class="auth-shell">
+    <header class="auth-brand">
+        <p class="wordmark">Workers Club</p>
+        <p class="lede">Members only. OpenAuth on every door.</p>
+    </header>
+    <section class="panel auth-panel">
+        {% if notice %}<p class="banner ok" role="status">{{ notice }}</p>{% endif %}
+        {% if error %}<p class="banner bad" role="alert">{{ error }}</p>{% endif %}
+        {% block auth %}{% endblock %}
+    </section>
+    <p class="foot-note">Python issuer · Dolt ledger · session + PKCE</p>
+</div>
+{% endblock %}

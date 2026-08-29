@@ -1,0 +1,24 @@
+{% extends "shell.html" %}
+{% block page_title %}History{% endblock %}
+{% block heading %}Dolt ledger{% endblock %}
+{% block content %}
+<p class="muted">Membership writes are committed in Dolt. This is <code>dolt_log</code> from the same database the Python API uses.</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>When</th>
+            <th>Commit</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in commits %}
+        <tr>
+            <td>{{ row.date }}</td>
+            <td><code>{{ row.commit_hash[:12] }}</code></td>
+            <td>{{ row.message }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
