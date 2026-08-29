@@ -10,6 +10,7 @@ from app.db import get_session
 from app.models import Member
 from app.security import safe_next_path
 from app.templating import templates
+from app.social_oauth import enabled_providers
 from app.services import (
     AuthError,
     authenticate_member,
@@ -77,16 +78,19 @@ def error_response(request: Request, template: str, status_code: int, message: s
 
 
 @router.get("/login")
-def login_form(request: Request, next: str = "/dashboard", notice: str | None = None):
+def login_form(request: Request, next: str = "/dashboard", notice: str | None = None, error: str | None = None):
     if getattr(request.state, "member", None):
         return RedirectResponse(safe_next_path(next), status_code=303)
+    settings = get_settings()
     return templates.TemplateResponse(
         request,
         "login.html",
         {
             "next": safe_next_path(next),
             "notice": NOTICE.get(notice or "", ""),
-            "settings": get_settings(),
+            "error": error or "",
+            "settings": settings,
+            "social_providers": enabled_providers(settings),
         },
     )
 
@@ -123,7 +127,12 @@ def login(
 def register_form(request: Request):
     if getattr(request.state, "member", None):
         return RedirectResponse("/dashboard", status_code=303)
-    return templates.TemplateResponse(request, "register.html", {"settings": get_settings()})
+    settings = get_settings()
+    return templates.TemplateResponse(
+        request,
+        "register.html",
+        {"settings": settings, "social_providers": enabled_providers(settings), "next": "/dashboard"},
+    )
 
 
 @router.post("/register")

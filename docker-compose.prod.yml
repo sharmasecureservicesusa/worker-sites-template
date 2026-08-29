@@ -1,0 +1,36 @@
+services:
+  dolt:
+    image: dolthub/dolt:latest
+    restart: unless-stopped
+    working_dir: /var/lib/dolt/members
+    command: ["sql-server", "--host", "0.0.0.0", "--port", "3306"]
+    volumes:
+      - dolt-data:/var/lib/dolt
+    healthcheck:
+      test: ["CMD", "dolt", "sql", "-q", "SELECT 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      dolt:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql+pymysql://root@dolt:3306/members
+      APP_ENV: production
+      DEBUG: "false"
+      SEED_DEMO: "false"
+      COOKIE_SECURE: "true"
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+
+volumes:
+  dolt-data:

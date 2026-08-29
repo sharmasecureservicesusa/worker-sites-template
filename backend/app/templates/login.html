@@ -3,6 +3,7 @@
 {% block auth %}
 <h1>Sign in</h1>
 <p class="muted">Every section of the club checks your membership before it renders.</p>
+{% include "partials/social_signin.html" %}
 <form method="post" action="/login" class="stack">
     <input type="hidden" name="next" value="{{ next }}">
     <label>

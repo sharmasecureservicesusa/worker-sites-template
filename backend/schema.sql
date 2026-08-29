@@ -3,12 +3,23 @@ CREATE TABLE IF NOT EXISTS members (
   id VARCHAR(36) PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
   display_name VARCHAR(120) NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255) NULL,
   role VARCHAR(32) NOT NULL DEFAULT 'member',
   email_verified BOOLEAN NOT NULL DEFAULT 0,
   is_active BOOLEAN NOT NULL DEFAULT 1,
   created_at DATETIME NOT NULL,
   updated_at DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS member_identities (
+  id VARCHAR(36) PRIMARY KEY,
+  member_id VARCHAR(36) NOT NULL,
+  provider VARCHAR(32) NOT NULL,
+  subject VARCHAR(128) NOT NULL,
+  email VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL,
+  UNIQUE KEY uq_member_identities_provider_subject (provider, subject),
+  FOREIGN KEY (member_id) REFERENCES members(id)
 );
 
 CREATE TABLE IF NOT EXISTS auth_sessions (

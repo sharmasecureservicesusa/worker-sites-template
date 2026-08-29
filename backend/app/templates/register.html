@@ -3,6 +3,7 @@
 {% block auth %}
 <h1>Request membership</h1>
 <p class="muted">Create an account, verify the email code, then sign in. Nothing inside is public.</p>
+{% include "partials/social_signin.html" %}
 <form method="post" action="/register" class="stack">
     <label>
         Display name
