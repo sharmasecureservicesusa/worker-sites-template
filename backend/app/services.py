@@ -12,6 +12,7 @@ from app.db import dolt_commit
 from app.models import (
     AuthSession,
     Member,
+    MemberIdentity,
     OAuthAuthCode,
     OAuthClient,
     OAuthRefreshToken,
@@ -59,6 +60,81 @@ rate_limiter = RateLimiter()
 
 def get_member_by_email(session: Session, email: str) -> Member | None:
     return session.scalar(select(Member).where(Member.email == normalize_email(email)))
+
+
+def get_identity(session: Session, *, provider: str, subject: str) -> MemberIdentity | None:
+    return session.scalar(
+        select(MemberIdentity).where(
+            MemberIdentity.provider == provider,
+            MemberIdentity.subject == subject,
+        )
+    )
+
+
+def login_oauth_member(
+    session: Session,
+    *,
+    provider: str,
+    subject: str,
+    email: str,
+    display_name: str,
+    email_verified: bool,
+) -> Member:
+    if not subject:
+        raise AuthError("Social sign-in failed.", 502)
+    email = normalize_email(email)
+    if not valid_email(email):
+        raise AuthError("Social sign-in did not return a valid email.", 400)
+    if not email_verified:
+        raise AuthError("Verify your email with the provider before signing in.", 403)
+
+    identity = get_identity(session, provider=provider, subject=subject)
+    if identity is not None:
+        member = session.get(Member, identity.member_id)
+        if member is None or not member.is_active:
+            raise AuthError("This membership is disabled.", 403)
+        if not member.email_verified:
+            member.email_verified = True
+            member.updated_at = utcnow()
+            session.commit()
+            dolt_commit(session, f"Verify email for {member.email}")
+        return member
+
+    member = get_member_by_email(session, email)
+    now = utcnow()
+    if member is None:
+        member = Member(
+            id=new_id(),
+            email=email,
+            display_name=display_name.strip()[:120] or email.split("@", 1)[0],
+            password_hash=None,
+            role="member",
+            email_verified=True,
+            is_active=True,
+            created_at=now,
+            updated_at=now,
+        )
+        session.add(member)
+        session.flush()
+    elif not member.is_active:
+        raise AuthError("This membership is disabled.", 403)
+    elif not member.email_verified:
+        member.email_verified = True
+        member.updated_at = now
+
+    session.add(
+        MemberIdentity(
+            id=new_id(),
+            member_id=member.id,
+            provider=provider,
+            subject=subject,
+            email=email,
+            created_at=now,
+        )
+    )
+    session.commit()
+    dolt_commit(session, f"Link {provider} identity for {member.email}")
+    return member
 
 
 def register_member(session: Session, *, email: str, display_name: str, password: str) -> tuple[Member, str]:
@@ -150,7 +226,7 @@ def authenticate_member(session: Session, *, email: str, password: str) -> Membe
     if rate_limiter.too_many(f"login:{email}", limit=8, window_seconds=900):
         raise AuthError("Too many sign-in attempts. Try again in a few minutes.", 429)
     member = get_member_by_email(session, email)
-    if member is None or not verify_password(password, member.password_hash):
+    if member is None or not member.password_hash or not verify_password(password, member.password_hash):
         raise AuthError("Email or password is incorrect.", 401)
     if not member.is_active:
         raise AuthError("This membership is disabled.", 403)
@@ -237,6 +313,8 @@ def reset_password(session: Session, *, email: str, code: str, password: str) ->
 
 
 def change_password(session: Session, member: Member, *, current_password: str, new_password: str) -> None:
+    if not member.password_hash:
+        raise AuthError("Set a password with email registration before changing it here.", 400)
     if not verify_password(current_password, member.password_hash):
         raise AuthError("Current password is incorrect.", 401)
     if not valid_password(new_password):

@@ -1,4 +1,4 @@
-.PHONY: test run install
+.PHONY: test run install prod
 
 install:
 	python3 -m venv .venv
@@ -10,3 +10,7 @@ test:
 run:
 	chmod +x scripts/dev.sh
 	./scripts/dev.sh
+
+prod:
+	chmod +x scripts/prod.sh
+	./scripts/prod.sh

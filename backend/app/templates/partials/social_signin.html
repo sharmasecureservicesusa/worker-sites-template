@@ -1,0 +1,11 @@
+{% if social_providers %}
+<div class="social-stack">
+    {% if "google" in social_providers %}
+    <a class="btn social google" href="/auth/google?next={{ next | default('/dashboard') | urlencode }}">Continue with Google</a>
+    {% endif %}
+    {% if "github" in social_providers %}
+    <a class="btn social github" href="/auth/github?next={{ next | default('/dashboard') | urlencode }}">Continue with GitHub</a>
+    {% endif %}
+</div>
+<p class="divider"><span>or use email</span></p>
+{% endif %}

@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     demo_password: str = "MembersOnly!2026"
     jwt_private_key_pem: str | None = None
     oauth_first_party_client_id: str = "workers-club"
+    google_client_id: str | None = None
+    google_client_secret: str | None = None
+    github_client_id: str | None = None
+    github_client_secret: str | None = None
 
 
 @lru_cache

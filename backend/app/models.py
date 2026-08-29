@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text, UniqueConstraint
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -14,7 +14,7 @@ class Member(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     display_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
     role: Mapped[str] = mapped_column(String(32), default="member", nullable=False)
     email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
@@ -22,6 +22,21 @@ class Member(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     sessions: Mapped[list["AuthSession"]] = relationship(back_populates="member")
+    identities: Mapped[list["MemberIdentity"]] = relationship(back_populates="member")
+
+
+class MemberIdentity(Base):
+    __tablename__ = "member_identities"
+    __table_args__ = (UniqueConstraint("provider", "subject", name="uq_member_identities_provider_subject"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    member_id: Mapped[str] = mapped_column(ForeignKey("members.id"), nullable=False)
+    provider: Mapped[str] = mapped_column(String(32), nullable=False)
+    subject: Mapped[str] = mapped_column(String(128), nullable=False)
+    email: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+    member: Mapped[Member] = relationship(back_populates="identities")
 
 
 class AuthSession(Base):

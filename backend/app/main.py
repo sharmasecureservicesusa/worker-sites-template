@@ -16,7 +16,7 @@ from app.config import get_settings
 from app.db import get_engine
 from app.keys import load_signing_keys
 from app.models import Member
-from app.routers import api, auth, oauth, site
+from app.routers import api, auth, oauth, site, social
 from app.security import verify_access_token
 from app.services import load_session_member
 from app.templating import templates
@@ -38,6 +38,10 @@ PUBLIC_EXACT = {
     "/api/auth/logout",
     "/logout",
     "/oauth/token",
+    "/auth/google",
+    "/auth/google/callback",
+    "/auth/github",
+    "/auth/github/callback",
     "/.well-known/openid-configuration",
     "/.well-known/oauth-authorization-server",
     "/.well-known/jwks.json",
@@ -143,6 +147,7 @@ def create_app() -> FastAPI:
     )
     application.add_middleware(MembershipGate)
     application.include_router(auth.router)
+    application.include_router(social.router)
     application.include_router(oauth.router)
     application.include_router(site.router)
     application.include_router(api.router)
