@@ -1,0 +1,26 @@
+{% extends "shell.html" %}
+{% block page_title %}Directory{% endblock %}
+{% block heading %}Member directory{% endblock %}
+{% block content %}
+<p class="muted">Only verified members appear here. The list is served from Dolt after the membership gate.</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Joined</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for person in members %}
+        <tr>
+            <td>{{ person.display_name }}</td>
+            <td>{{ person.email }}</td>
+            <td>{{ person.role }}</td>
+            <td>{{ person.created_at.strftime("%Y-%m-%d") }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

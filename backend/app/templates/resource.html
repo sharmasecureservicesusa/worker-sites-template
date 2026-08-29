@@ -1,0 +1,10 @@
+{% extends "shell.html" %}
+{% block page_title %}{{ resource.title }}{% endblock %}
+{% block heading %}{{ resource.title }}{% endblock %}
+{% block content %}
+<article class="prose">
+    <p class="muted">{{ resource.summary }}</p>
+    <p>{{ resource.body }}</p>
+    <p><a href="/library">Back to library</a></p>
+</article>
+{% endblock %}

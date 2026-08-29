@@ -1,0 +1,14 @@
+{% extends "shell.html" %}
+{% block page_title %}OpenAuth callback{% endblock %}
+{% block heading %}Authorization code{% endblock %}
+{% block content %}
+{% if error %}
+<p class="banner bad">{{ error }}</p>
+{% endif %}
+{% if code %}
+<p>The issuer returned a one-time authorization code. Exchange it at <code>POST /oauth/token</code> with PKCE.</p>
+<p><code class="break">{{ code }}</code></p>
+{% else %}
+<p class="muted">No code in the callback query string.</p>
+{% endif %}
+{% endblock %}

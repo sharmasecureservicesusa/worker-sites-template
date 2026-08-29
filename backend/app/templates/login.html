@@ -1,0 +1,25 @@
+{% extends "auth.html" %}
+{% block title %}Sign in · Workers Club{% endblock %}
+{% block auth %}
+<h1>Sign in</h1>
+<p class="muted">Every section of the club checks your membership before it renders.</p>
+<form method="post" action="/login" class="stack">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label>
+        Email
+        <input type="email" name="email" autocomplete="username" required value="{{ email | default('') }}">
+    </label>
+    <label>
+        Password
+        <input type="password" name="password" autocomplete="current-password" required minlength="10">
+    </label>
+    <button type="submit" class="btn primary">Enter the club</button>
+</form>
+<p class="links">
+    <a href="/register">Request membership</a>
+    <a href="/forgot">Forgot password</a>
+</p>
+{% if settings.debug and settings.seed_demo and settings.app_env != "test" %}
+<p class="demo-hint">Local demo: {{ settings.demo_email }} / {{ settings.demo_password }}</p>
+{% endif %}
+{% endblock %}

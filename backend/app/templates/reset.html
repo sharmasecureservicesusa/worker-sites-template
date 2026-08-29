@@ -1,0 +1,24 @@
+{% extends "auth.html" %}
+{% block title %}New password · Workers Club{% endblock %}
+{% block auth %}
+<h1>Choose a new password</h1>
+{% if debug_code %}
+<p class="demo-hint">Debug code: <strong>{{ debug_code }}</strong></p>
+{% endif %}
+<form method="post" action="/reset" class="stack">
+    <label>
+        Email
+        <input type="email" name="email" required value="{{ email }}">
+    </label>
+    <label>
+        Reset code
+        <input type="text" name="code" inputmode="numeric" maxlength="6" required>
+    </label>
+    <label>
+        New password
+        <input type="password" name="password" autocomplete="new-password" required minlength="10">
+    </label>
+    <button type="submit" class="btn primary">Update password</button>
+</form>
+<p class="links"><a href="/login">Back to sign in</a></p>
+{% endblock %}
