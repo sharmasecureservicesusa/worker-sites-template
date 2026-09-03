@@ -1,0 +1,17 @@
+{
+  "name": "worker-sites-template",
+  "install": "npm ci",
+  "terminals": [
+    {
+      "name": "wrangler-dev",
+      "command": "npm run dev -- --ip 0.0.0.0 --port 8787",
+      "description": "Local Cloudflare Workers dev server for the static site, served at http://localhost:8787"
+    }
+  ],
+  "ports": [
+    {
+      "name": "wrangler dev",
+      "port": 8787
+    }
+  ]
+}

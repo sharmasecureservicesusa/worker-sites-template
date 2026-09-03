@@ -1,0 +1,15 @@
+{
+  "name": "worker-sites-template",
+  "version": "1.0.0",
+  "description": "A template for kick starting a Cloudflare Workers static site.",
+  "private": true,
+  "license": "MIT OR Apache-2.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.42.0"
+  }
+}
